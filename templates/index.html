@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>{% if page.title %}{{ page.title }} :: {% endif %}{% if section.title %}{{ section.title }} :: {% endif %}{{ config.title }}</title>
+    <link rel="stylesheet" href="{{ get_url(path="global.css") | safe }}">
+    <meta name="description" content="{% if page.description %}{{ page.description | safe }}{% else %}{{ config.description | safe }}{% endif %}">
+    <meta property="og:title" content="{% if page.title %}{{ page.title | safe }} :: {% endif %}{{ config.title | safe }}">
+    <meta property="og:description" content="{% if page.description %}{{ page.description | safe }}{% else %}{{ config.description | safe }}{% endif %}">
+    <meta property="og:type" content="website">
+    {% if current_url %}
+    <meta property="og:url" content="{{ current_url | safe }}">
+    <link rel="canonical" href="{{ current_url | safe }}">
+    {% endif %}
+    <meta name="theme-color" content="#1F1E1E">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="{{ get_url(path="", lang=lang) | safe }}">{{ trans(key="nav-home", lang=lang) }}</a>
+        <a href="{{ get_url(path="posts", lang=lang) | safe }}">{{ trans(key="nav-posts", lang=lang) }}</a>
+        <a href="{{ get_taxonomy(kind="tags", lang=lang) | get(key="permalink") | safe }}">{{ trans(key="nav-tags", lang=lang) }}</a>
+        <a href="{{ get_url(path="whoami", lang=lang) | safe }}">{{ trans(key="nav-whoami", lang=lang) }}</a>
+        {% if current_path %}
+          {% set current_path = current_path | trim_start_matches(pat="/"~lang~"/") | trim_start_matches(pat="/") %}
+        {% else %}
+          {% set current_path = "404" %}
+        {% endif %}
+        {% if lang == "en" %}
+          <a href="{{ get_url(path=current_path, lang="fr") | safe }}"><img class="flag" src="{{ get_url(path="flags/fr.svg") }}"/></a>
+          <a href="#"><img class="flag" src="{{ get_url(path="flags/us.svg") }}"/></a>
+          {% elif lang == "fr" %}
+          <a href="#"><img class="flag" src="{{ get_url(path="flags/fr.svg") }}"/></a>
+          <a href="{{ get_url(path=current_path, lang="en") | safe }}"><img class="flag" src="{{ get_url(path="flags/us.svg") }}"/></a>
+        {% endif %}
+      </nav>
+      <hr>
+    </header>
+    <main>
+      {% block content %}{% endblock content %}
+    </main>
+    <!-- <pre>
+      {% if section %}
+      {{section|json_encode(pretty=true)}}
+      {% endif %}
+      {% if page %}
+      {{page|json_encode(pretty=true)}}
+      {% endif %}
+    
+    </pre> -->
+    <footer>
+      Proudly built with <a href="https://www.getzola.org/">Zola</a>
+    </footer>
+  </body>
+</html>

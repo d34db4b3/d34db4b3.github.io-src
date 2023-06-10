@@ -1,0 +1,51 @@
+base_url = "https://blog.d34db4b3.org/"
+title = "Paddling towards the Mariana Trench"
+description = "A blog dedicated to fiddling around with tech"
+compile_sass = false
+minify_html = true
+build_search_index = true
+default_language = "en"
+generate_feed = true
+
+taxonomies = [{ name = "tags" }]
+
+
+[languages.fr]
+generate_feed = true
+build_search_index = true
+title = "Barboter vers la fosse des Mariannes"
+description = "Un blog de bidouille technologique"
+taxonomies = [{ name = "tags" }]
+
+
+[markdown]
+highlight_code = true
+highlight_theme = "visual-studio-dark"
+external_links_target_blank = true
+external_links_no_follow = true
+external_links_no_referrer = true
+smart_punctuation = true
+
+
+[search]
+include_title = true
+include_description = true
+include_path = true
+include_content = true
+
+[extra]
+author = "d34db4b3"
+
+[translations]
+nav-home = "HOME"
+nav-posts = "POSTS"
+nav-tags = "TAGS"
+nav-whoami = "WHOAMI"
+summary = "Summary:"
+
+[languages.fr.translations]
+nav-home = "ACCEUIL"
+nav-posts = "PUBLICATIONS"
+nav-tags = "MOTS CLES"
+nav-whoami = "QUI SUIS-JE"
+summary = "Sommaire :"

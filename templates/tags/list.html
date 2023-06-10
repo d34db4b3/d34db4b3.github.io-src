@@ -1,0 +1,8 @@
+{% extends "index.html" %}
+{% block content %}
+<ul>
+    {% for tag in terms %}
+    <li><a href="{{ tag.permalink | safe }}">{{ tag.name | safe }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock content %}
