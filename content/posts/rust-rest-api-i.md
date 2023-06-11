@@ -277,9 +277,8 @@ In this way, it would have been feasible to display a default name, for example 
 
 
 ```rs
-#[get("/greet")]
-async fn greet(greet_query: web::Query<GreetQuery>) -> web::Json<GreetResponse> {
-    web::Json(GreetResponse {
+async fn greet(greet_query: Query<GreetQuery>) -> Json<GreetResponse> {
+    Json(GreetResponse {
         greeting: format!(
             "Hello, {}!",
             greet_query
