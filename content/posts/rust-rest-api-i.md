@@ -1,7 +1,7 @@
 +++
 title = "A modern REST web service, written in Rust, Part I"
 date = 2022-03-06 23:51:21
-updated = 2023-06-10 00:26:10
+updated = 2023-06-11 19:14:38
 authors = ["d34db4b3"]
 description =  "We will dive into web back-end design with a simple REST API, using the reliable and efficient programming language Rust"
 [taxonomies]
@@ -10,7 +10,7 @@ tags = ["rust", "web", "backend", "REST"]
 
 # TLDR
 
-> IN PROGRESS
+> We setup our project with [`axum`](https://docs.rs/axum/0.6/axum) and [`tokio`](https://docs.rs/tokio/1/tokio) and test it with a simple "greetings" endpoint.
 
 # Introduction
 
@@ -38,7 +38,7 @@ During the course of the article, snapshots of the example project will be avail
 
 ## Project creation
 
-As for any Rust project, we will use the [cargo](https://doc.rust-lang.org/cargo/index.html) utility to initialize the sources. Once placed in the folder where the project will be created, the following command will generate the `rest-api-tutorial` project.
+As for any Rust project, we will use the [cargo](https://doc.rust-lang.org/cargo/index.html) utility to initialize the sources structure. Once placed in the folder where the project will be created, the following command will generate the `rest-api-tutorial` project.
 
 ```sh
 cargo new rest-api-tutorial
@@ -72,11 +72,11 @@ It is now possible to compile and run the program with the following command fro
 cargo run
 ```
 
-A beautiful "Hello, world!" is presented to us, but it is not really the subject of this article!
+A beautiful "Hello, world!" is presented to us, but it is not really the subject of this article.
 
 ## Adding crates
 
-We will need a few dependencies, notably [`axum`](https://docs.rs/axum/0.6/axum) and [`tokio`](https://docs.rs/tokio/1/tokio). Axum will provide most of the features required for an HTTP server (routing, HTTP protocol implementation, middlewares, etc.). As it takes advantages of the [`async`](https://rust-lang.github.io/async-book/) Rust features, we will also need `tokio`.
+We will need a few dependencies, notably [`axum`](https://docs.rs/axum/0.6/axum) and [`tokio`](https://docs.rs/tokio/1/tokio). Axum will provide most of the features required for an HTTP server (routing, HTTP protocol implementation, middlewares, etc.). As it takes advantages of the [`async`](https://rust-lang.github.io/async-book/) Rust features, we will also need `tokio`, which is a runtime for asynchronous applications.
 
 Let's add those in the `Cargo.toml` manifest file.
 To do this, insert the lines `axum = "0.6"` and `tokio = { version = "1", features = ["full"] }` to the category `[dependencies]`. The file then looks like
@@ -161,19 +161,19 @@ Hello, world!
 
 [Source code snapshot](https://github.com/d34db4b3/rest-api-tutorial/tree/snapshots/init)
 
-# Analysis of a route
+# Analysis of a handler
 
-## Route management function
+## Routing
 
 Each route is associated with a function to process the request and respond appropriately. These functions called [handlers](https://docs.rs/axum/0.6/axum/handler/index.html) are simply asynchronous functions that are given extractors as arguments (see [`axum::extract`](https://docs.rs/axum/0.6/axum/extract/index.html)) and return an object that must be convertible into a response (see [`axum::response`](https://docs.rs/axum/0.6/axum/response/index.html)).
 
-### Request analysis
+## Request analysis
 
-Most of the request data is obtained via "extractors" (a type implementing the `FromRequest` or `FromRequestParts` trait). Several extractors are provided by `axum` in order to ease the implementation, but it is possible to add more as needed (which we will see with access restrictions in a next part). Among them we can mention [`Path`](https://docs.rs/axum/0.6/axum/extract/struct.Path.html) allowing the extraction of parameters in the path of the resource, [`Query`](https://docs.rs/axum/0.6/axum/extract/struct.Query.html) which in the same way allows the extraction of the parameters of the request ([more information on URLs](https://developer.mozilla.org/fr/docs/Learn/Common_questions/What_is_a_URL)), [`Json`](https://docs.rs/axum/0.6/axum/struct.Json.html) which allows the deserialization of the request body from the [JSON](https://www.json.org/json-fr.html) format and finally [`Form`](https://docs.rs/axum/0.6/axum/struct.Form.html) which has a similar behavior from the classic URL-encoded form format.
+Most of the request data is obtained via "extractors" (a type implementing the [`FromRequest`](https://docs.rs/axum/0.6/axum/extract/trait.FromRequest.html) or [`FromRequestParts`](https://docs.rs/axum/0.6/axum/extract/trait.FromRequestParts.html) trait). Several extractors are provided by `axum` in order to ease the implementation, but it is possible to add more as needed (which we will see with access restrictions in a next part). Among them we can mention [`Path`](https://docs.rs/axum/0.6/axum/extract/struct.Path.html) allowing the extraction of parameters in the path of the resource, [`Query`](https://docs.rs/axum/0.6/axum/extract/struct.Query.html) which in the same way allows the extraction of the parameters of the request ([more information on URLs](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Web_mechanics/What_is_a_URL)), [`Json`](https://docs.rs/axum/0.6/axum/struct.Json.html) which allows the deserialization of the request body from the [JSON](https://www.json.org/json-en.html) format and finally [`Form`](https://docs.rs/axum/0.6/axum/struct.Form.html) which has a similar behavior from the classic URL-encoded form format.
 
 These extractors are given as parameters to our handlers and allow us to obtain data extraction with static and safe typing. The deserialization errors can thus be properly managed and it will be possible to have some guarantee over the presence and correctness of parameters before the processing of the request. This allows the code to be more robust, clear and concise.
 
-### Response analysis
+## Response analysis
 
 In order to respond to requests, functions associated with routes must return an object that implements [`IntoResponse`](https://docs.rs/axum/0.6/axum/response/trait.IntoResponse.html).
 
@@ -219,7 +219,7 @@ async fn greet(greet_query: Query<GreetQuery>) -> Json<GreetResponse> {
 }
 ```
 
-Then we just need to register the service on our application and our `main` function now looks like
+Then we just need to register the route on our application and our `main` function now looks like
 
 ```rs
 #[tokio::main]
@@ -291,7 +291,7 @@ async fn greet(greet_query: Query<GreetQuery>) -> Json<GreetResponse> {
 }
 ```
 
-Instead of the error when requesting <http://localhost:8080/greet> we would then have had the following response:
+Instead of the error when requesting <http://127.0.0.1:3000/greet> we would then have had the following response:
 
 ```json
 {
@@ -301,4 +301,7 @@ Instead of the error when requesting <http://localhost:8080/greet> we would then
 
 [Source code snapshot](https://github.com/d34db4b3/rest-api-tutorial/tree/snapshots/greetings)
 
-> IN PROGRESS
+> Congratulations, this is the end of the introduction, the next part is being written.
+
+<!-- 
+Now that we are done with the introduction, let's have a deeper look at error handling in the [next part](@/posts/rust-rest-api-ii.md). -->
