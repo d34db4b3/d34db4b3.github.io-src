@@ -159,7 +159,7 @@ The expected operation of the program is an HTTP server listening on port `3000`
 Hello, world!
 ```
 
-[Source code snapshot](https://github.com/d34db4b3/rest-api-tutorial/tree/snapshot/init)
+[Source code snapshot](https://github.com/d34db4b3/rest-api-tutorial/tree/snapshots/init)
 
 # Analysis of a route
 
