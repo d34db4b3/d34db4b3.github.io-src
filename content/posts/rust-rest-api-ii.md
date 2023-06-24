@@ -30,7 +30,7 @@ Some external events could also impact our poor process:
 - Power failure
 - System failure
 - Hardware fault
-- Being swallowed by a blackhole
+- Being swallowed by a black-hole
 
 We unfortunately cannot recover from those and it will lead to a service interruption (there are some option to avoid an impact on the end user but it will not be discussed here).
 
@@ -44,16 +44,16 @@ For example, our system can:
 - some service we depend on fails/is not accessible (database, etc.): how do we store/get our data ? 
 <!-- - get overloaded (cpu/io/network): what if we have some timing constraints ? (this one is not really an error but you may then encounter some timeouts) -->
 
-The easier way to handle those is to return an internal error (at least temporarily) to the users of aur process.
-It is not necessary/desired to expose the actual reason for the error to the user as he probably can't do anything about it.
+The easier way to handle those is to return an internal error (at least temporarily) to the users of our service.
+It is not necessary/desired to expose the actual reason for the error to the user as he/she probably can't do anything about it.
 
 It is also possible to handle some of them depending on the situation. For example, non critical logs could be rotated/truncated forcefully on disk exhaustion (and preferably before complete exhaustion) and switch to a less aggressive logging strategy (only logging warnings/errors).
 
-We can either panic or represent the error as a `Result::Err` or equivalent, knowing that explicitly handling errors is generally beneficial for robustness and clarity.
+We can either panic or represent the error as a `Result::Err` or equivalent, noting that explicitly handling errors rather than panicking is generally beneficial for robustness and clarity.
 
 ## The bugs
 
-Even the best&#2122; language cannot prevent the even better programers from every bug. We have some guaranties about memory and thread safety and if the tooling helps avoiding logic mistakes, someone's "bug" is someone else's feature.
+Even the best&#2122; language cannot prevent the even better programers from every bug. We have some guaranties about memory and thread safety and even if the tooling helps avoiding some logic mistakes, someone's "bug" is someone else's feature.
 
 The symptoms of these errors can be:
 - an invalid/unexpected result (worst case)
